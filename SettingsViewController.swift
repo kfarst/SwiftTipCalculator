@@ -37,7 +37,7 @@ class SettingsViewController: UIViewController {
             firstTipPercentageField.text = "20"
             defaults.userDefaults.setDouble(0.2, forKey: "First Tip Percentage")
         } else {
-            firstTipPercentageField.text = String(format: "%d", (defaults.firstTip * 100).bridgeToObjectiveC().integerValue)
+            firstTipPercentageField.text = String(format: "%d", Int(defaults.firstTip * 100))
             defaults.userDefaults.setDouble(defaults.firstTip, forKey: "First Tip Percentage")
         }
         
@@ -45,7 +45,7 @@ class SettingsViewController: UIViewController {
             secondTipPercentageField.text = "22"
             defaults.userDefaults.setDouble(0.22, forKey: "Second Tip Percentage")
         } else {
-            secondTipPercentageField.text = String(format: "%d", (defaults.secondTip * 100).bridgeToObjectiveC().integerValue)
+            secondTipPercentageField.text = String(format: "%d", Int(defaults.secondTip * 100))
             defaults.userDefaults.setDouble(defaults.secondTip, forKey: "Second Tip Percentage")
         }
         
@@ -53,7 +53,7 @@ class SettingsViewController: UIViewController {
             thirdTipPercentageField.text = "25"
             defaults.userDefaults.setDouble(0.25, forKey: "Third Tip Percentage")
         } else {
-            thirdTipPercentageField.text = String(format: "%d", (defaults.thirdTip * 100).bridgeToObjectiveC().integerValue)
+            thirdTipPercentageField.text = String(format: "%d", Int(defaults.thirdTip * 100))
             defaults.userDefaults.setDouble(defaults.thirdTip, forKey: "Third Tip Percentage")
         }
         
@@ -77,29 +77,29 @@ class SettingsViewController: UIViewController {
     */
 
     @IBAction func onTap(sender: AnyObject) {
-        var decimalTip = firstTipPercentageField.text.bridgeToObjectiveC().doubleValue
+        var decimalTip = (firstTipPercentageField.text as NSString).doubleValue
         var defaults = Defaults()
 
         if firstTipPercentageField.text.isEmpty || decimalTip.isZero || decimalTip > 99 {
-            firstTipPercentageField.text = String(format: "%d", (defaults.firstTip * 100).bridgeToObjectiveC().integerValue)
+            firstTipPercentageField.text = String(format: "%d", Int(defaults.firstTip * 100))
         } else {
-            defaults.userDefaults.setDouble((firstTipPercentageField.text.bridgeToObjectiveC().doubleValue * 0.01), forKey: "First Tip Percentage")
+            defaults.userDefaults.setDouble(((firstTipPercentageField.text as NSString).doubleValue * 0.01), forKey: "First Tip Percentage")
         }
         
-        decimalTip = secondTipPercentageField.text.bridgeToObjectiveC().doubleValue
+        decimalTip = (secondTipPercentageField.text as NSString).doubleValue
         
         if secondTipPercentageField.text.isEmpty || decimalTip.isZero || decimalTip > 99 {
-            secondTipPercentageField.text = String(format: "%d", (defaults.secondTip * 100).bridgeToObjectiveC().integerValue)
+            secondTipPercentageField.text = String(format: "%d", Int(defaults.secondTip * 100))
         } else {
-            defaults.userDefaults.setDouble((secondTipPercentageField.text.bridgeToObjectiveC().doubleValue * 0.01), forKey: "Second Tip Percentage")
+            defaults.userDefaults.setDouble(((secondTipPercentageField.text as NSString).doubleValue * 0.01), forKey: "Second Tip Percentage")
         }
         
-        decimalTip = thirdTipPercentageField.text.bridgeToObjectiveC().doubleValue
+        decimalTip = (thirdTipPercentageField.text as NSString).doubleValue
         
         if thirdTipPercentageField.text.isEmpty || decimalTip.isZero || decimalTip > 99 {
-            thirdTipPercentageField.text = String(format: "%@", (defaults.thirdTip * 100).bridgeToObjectiveC().integerValue)
+            thirdTipPercentageField.text = String(format: "%@", Int(defaults.thirdTip * 100))
         } else {
-            defaults.userDefaults.setDouble((thirdTipPercentageField.text.bridgeToObjectiveC().doubleValue * 0.01), forKey: "Third Tip Percentage")
+            defaults.userDefaults.setDouble(((thirdTipPercentageField.text as NSString).doubleValue * 0.01), forKey: "Third Tip Percentage")
         }
         
         defaults.userDefaults.synchronize()

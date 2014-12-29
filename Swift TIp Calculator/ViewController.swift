@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
                             
-    @IBOutlet strong var billField: UITextField!
+    @IBOutlet weak var billField: UITextField!
     @IBOutlet weak var totalLabel: UILabel!
     @IBOutlet weak var tipLabel: UILabel!
     @IBOutlet weak var tipControl: UISegmentedControl!
@@ -56,9 +56,9 @@ class ViewController: UIViewController {
         var defaults = Defaults()
 
         if !defaults.firstTip.isZero {
-            tipControl.setTitle(String(format: "%d%%", (defaults.firstTip * 100).bridgeToObjectiveC().integerValue), forSegmentAtIndex: 0)
-            tipControl.setTitle(String(format: "%d%%", (defaults.secondTip * 100).bridgeToObjectiveC().integerValue), forSegmentAtIndex: 1)
-            tipControl.setTitle(String(format: "%d%%", (defaults.thirdTip * 100).bridgeToObjectiveC().integerValue), forSegmentAtIndex: 2)
+            tipControl.setTitle(String(format: "%d%%", Int(defaults.firstTip * 100)), forSegmentAtIndex: 0)
+            tipControl.setTitle(String(format: "%d%%", Int(defaults.secondTip * 100)), forSegmentAtIndex: 1)
+            tipControl.setTitle(String(format: "%d%%", Int(defaults.thirdTip * 100)), forSegmentAtIndex: 2)
         }
         calculateBill()
     }
@@ -69,7 +69,7 @@ class ViewController: UIViewController {
         var tipPercentages = defaults.firstTip.isZero ? [0.2, 0.22, 0.25] : [defaults.firstTip, defaults.secondTip, defaults.thirdTip]
         var tipPercentage = tipPercentages[tipControl.selectedSegmentIndex]
         
-        var billAmount = billField.text.bridgeToObjectiveC().doubleValue
+        var billAmount = (billField.text as NSString).doubleValue
         var tip = billAmount * tipPercentage
         var total = billAmount + tip
 
@@ -82,7 +82,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func onTap(sender: AnyObject) {
-        TextFields(billFieldText: billField.text.bridgeToObjectiveC().doubleValue)
+        TextFields(billFieldText: (billField.text as NSString).doubleValue)
         view.endEditing(true)
     }
 }
