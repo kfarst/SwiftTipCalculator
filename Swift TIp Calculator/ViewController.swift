@@ -15,21 +15,20 @@ class ViewController: UIViewController {
     @IBOutlet weak var tipLabel: UILabel!
     @IBOutlet weak var tipControl: UISegmentedControl!
     
+    
     struct Defaults {
         var userDefaults: NSUserDefaults
         var firstTip: Double
         var secondTip: Double
         var thirdTip: Double
-        var lastBillInput: Double
-        //var timeAtAppClose: AnyObject
+        var lastBillAmount: NSArray?
         
         init () {
             userDefaults = NSUserDefaults.standardUserDefaults()
             firstTip = userDefaults.doubleForKey("First Tip Percentage")
             secondTip = userDefaults.doubleForKey("Second Tip Percentage")
             thirdTip = userDefaults.doubleForKey("Third Tip Percentage")
-            lastBillInput = userDefaults.doubleForKey("Last Bill Input")
-            //timeAtAppClose = userDefaults.objectForKey("Time At App Close")
+            lastBillAmount = userDefaults.objectForKey("Last Bill Amount") as? NSArray
         }
     }
     
@@ -40,13 +39,26 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        var defaults = Defaults()
         
-        tipLabel.text = "$0.00"
-        totalLabel.text = "$0.00"
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidEnterBackground", name: UIApplicationWillTerminateNotification, object: UIApplication.sharedApplication())
+        
+        if let timedArray = defaults.lastBillAmount {
+            if let aThen = timedArray.lastObject as? NSDate  {
+                if NSDate.timeIntervalSinceReferenceDate() - aThen.timeIntervalSinceReferenceDate  < 10*60 {
+                    billField!.text = timedArray.firstObject as String
+                    calculateBill()
+                }
+            }
+        }
+        else {
+            tipLabel.text = "$0.00"
+            totalLabel.text = "$0.00"
+        }
         
         billField.becomeFirstResponder()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -65,17 +77,29 @@ class ViewController: UIViewController {
 
     func calculateBill() {
         var defaults = Defaults()
+        var userDefaults = NSUserDefaults.standardUserDefaults()
         
         var tipPercentages = defaults.firstTip.isZero ? [0.2, 0.22, 0.25] : [defaults.firstTip, defaults.secondTip, defaults.thirdTip]
         var tipPercentage = tipPercentages[tipControl.selectedSegmentIndex]
         
         var billAmount = (billField.text as NSString).doubleValue
+        userDefaults.setValue(billAmount, forKey: "Last Bill Input")
         var tip = billAmount * tipPercentage
         var total = billAmount + tip
 
         tipLabel.text = String(format: "$%.2f", tip)
         totalLabel.text = String(format: "$%.2f", total)
     }
+    
+    func applicationDidEnterBackground(notification: NSNotification!) {
+        if !billField.text.isEmpty {
+            var defaults = NSUserDefaults.standardUserDefaults()
+            var timedString = NSArray(arrayLiteral: billField.text, NSDate())
+            defaults.setObject(timedString, forKey: "Last Bill Amount")
+            defaults.synchronize()
+        }
+    }
+    
     
     @IBAction func onEditingChanged(sender: AnyObject) {
         calculateBill()

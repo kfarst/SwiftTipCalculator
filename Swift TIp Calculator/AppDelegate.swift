@@ -38,11 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication!) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        var defaults = NSUserDefaults.standardUserDefaults()
-        defaults.setObject(NSDate(), forKey: "Time At App Close")
-        defaults.synchronize()
     }
-
-
 }
 
